@@ -3,6 +3,7 @@ use std::fs::File;
 use std::fs;
 use std::io::Write;
 use bytes::Bytes;
+use std::process::{Command, Stdio};
 
 pub struct Video {
     pub filename: String,
@@ -23,9 +24,7 @@ impl Video {
 
     pub fn save_to_fs(&self, folder: &str) {
         fs::create_dir(&folder);
-        let mut  full_filename = String::from(folder);
-        full_filename.push_str(&self.filename);
-        dbg!(&full_filename);
+        let full_filename = get_full_filename(folder, &self.filename);
         write_to_file(&full_filename, &self.body);
     }
 
@@ -48,13 +47,29 @@ impl Video {
         let client = reqwest::Client::new();
         client.get(link).send().await.expect("Problem while GET request")
     }
+}
 
+// TODO fix case when folder does not have slash
+pub fn get_full_filename(folder: &str, filename: &str) -> String {
+        let mut full_filename = String::from(folder);
+        full_filename.push_str(&filename);
+        full_filename
 }
 
 fn write_to_file(filename: &str, body: &[u8])
 {
     let mut destination = File::create(filename).expect("Problem while create file");
     destination.write_all(body);
+}
+
+pub fn to_mp4(dir: &str, filename: &str, result_filename: &str) {
+    Command::new("ffmpeg")
+        .stdout(Stdio::null())
+        .arg("-i")
+        .arg(&get_full_filename(dir, filename))
+        .arg(&get_full_filename(dir, result_filename))
+        .output()
+        .expect("Failed to execute process");
 }
 
 pub async fn run() {

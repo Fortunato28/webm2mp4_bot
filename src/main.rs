@@ -6,4 +6,6 @@ async fn main() {
     let temp_dir = "tmp/";
     let video = w2m::Video::new(link).await;
     video.save_to_fs(temp_dir);
+
+    w2m::to_mp4(&temp_dir, &video.filename, "result.mp4");
 }
