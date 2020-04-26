@@ -1,5 +1,6 @@
 use teloxide::prelude::*;
 use std::fs::File;
+use std::path::PathBuf;
 use std::fs;
 use std::io::Write;
 use bytes::Bytes;
@@ -84,11 +85,19 @@ teloxide::enable_logging!();
                 let link = &message.update.text().expect("Faild while read link");
 
                 let temp_dir = "tmp/";
+                let result_filename = "result.mp4";
                 let video = Video::new(link).await;
                 video.save_to_fs(temp_dir);
-                to_mp4(&temp_dir, &video.filename, "result.mp4");
+                to_mp4(&temp_dir, &video.filename, result_filename);
 
-                message.answer("pong").send().await.log_on_error().await;
+                let path_to_result = PathBuf::from(get_full_filename(&temp_dir, result_filename));
+                dbg!(&path_to_result);
+                message
+                    .answer_video(teloxide::types::InputFile::File(path_to_result))
+                    .send()
+                    .await
+                    .log_on_error()
+                    .await;
             })
         })
         .dispatch()
