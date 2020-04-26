@@ -81,6 +81,13 @@ teloxide::enable_logging!();
     Dispatcher::new(bot)
         .messages_handler(|rx: DispatcherHandlerRx<Message>| {
             rx.for_each(|message| async move {
+                let link = &message.update.text().expect("Faild while read link");
+
+                let temp_dir = "tmp/";
+                let video = Video::new(link).await;
+                video.save_to_fs(temp_dir);
+                to_mp4(&temp_dir, &video.filename, "result.mp4");
+
                 message.answer("pong").send().await.log_on_error().await;
             })
         })
