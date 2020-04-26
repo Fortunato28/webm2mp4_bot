@@ -14,7 +14,7 @@ This is little project for self education. Required way:
 6. Improve code and algorithms
 
 ## Required features:
-- [ ] Download video on the filesystem
+- [x] Download video on the filesystem
 - [ ] Recode video using ffmpeg
-- [ ] Upload video
+- [ ] Send recoded video to the dialog
 - [ ] Clean filesystem
