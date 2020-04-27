@@ -98,6 +98,8 @@ teloxide::enable_logging!();
                     .await
                     .log_on_error()
                     .await;
+
+                fs::remove_dir_all(temp_dir);
             })
         })
         .dispatch()

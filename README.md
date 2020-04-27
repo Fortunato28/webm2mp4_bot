@@ -17,4 +17,4 @@ This is little project for self education. Required way:
 - [x] Download video on the filesystem
 - [x] Recode video using ffmpeg
 - [x] Send recoded video to the dialog
-- [ ] Clean filesystem
+- [x] Clean filesystem
